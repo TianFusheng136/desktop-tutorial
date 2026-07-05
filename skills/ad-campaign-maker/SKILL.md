@@ -1,13 +1,15 @@
 ---
 name: ad-campaign-maker
-description: Guided advertising creation workflow for campaign concepts, promotional copy, visual ads, image-generation prompts, social media ads, video scripts, storyboards, ecommerce ads, landing pages, slogans, UGC scripts, A/B variants, and model-specific image prompt adaptation for OpenAI GPT Image, Nano Banana/Gemini Image, Doubao, Midjourney, and Stable Diffusion. Use when the user asks to create, plan, rewrite, localize, adapt, or evaluate advertising or marketing creative.
+description: "Use when creating, planning, rewriting, localizing, adapting, or evaluating ads, campaign concepts, promotional copy, visual ads, image prompts, social media ads, video scripts, ecommerce ads, landing pages, slogans, UGC scripts, A/B variants, or model-specific image prompts. Default to a low-friction brief: ask only user-known facts, infer marketing strategy, and offer choices for unclear goals or channels."
 ---
 
 # Ad Campaign Maker
 
 ## Core rule
 
-Clarify first, then create. Do not produce final ads until the brief is clear enough. If the user explicitly says to proceed without answers, create with labeled assumptions.
+Clarify first, then create, but keep clarification easy. Do not produce final ads until the brief is clear enough. If the user explicitly says to proceed without answers, create with labeled assumptions.
+
+**Brief friction rule:** never dump a full marketing brief questionnaire. Ask only user-known facts. Never ask the user to supply pain points, desires, objections, awareness level, KPI, or creative angles unless they volunteer marketing strategy. 禁止让普通用户填写“痛点/需求欲望/决策顾虑”这类专家问题；由 AI 根据产品、人群、渠道和优惠推断，并作为可修改假设呈现。
 
 This skill creates advertising strategy, copy, visual direction, scripts, storyboards, and image-generation packs. A skill cannot force an external platform to use a specific image model; it must adapt the deliverable to the generator the user will actually use.
 
@@ -36,11 +38,11 @@ Read references as needed:
 
 #### Low-friction Brief Mode
 
-Default to low-friction brief collection. Ask only for user-known facts; do not make the user think like a marketing strategist. The model should infer pain points, desires, objections, awareness level, likely KPI, and message angles from the product, audience label, channel, and offer. Present these as editable assumptions instead of asking the user to invent them.
+Default to low-friction brief collection. Ask only for user-known facts; do not make the user think like a marketing strategist. Never ask the user to supply pain points; infer pain points and decision concerns from the simple audience label. The model should infer pain points, desires, objections, awareness level, likely KPI, and message angles from the product, audience label, channel, and offer. Present these as editable assumptions instead of asking the user to invent them.
 
 Use multiple-choice options for unclear marketing fields. For example, if the goal is missing, ask the user to choose from: awareness / clicks / leads / purchases / app installs / event registration / retargeting / retention, and include one recommended option with a short reason. If the audience is vague, ask for a simple audience label only, then infer likely pain and decision concerns.
 
-Do not ask questions like “what are their core pain points, desires, and objections?” unless the user is clearly a marketer or has already provided strategic context. Ask “who is this mainly for?” and then infer the rest.
+Do not ask questions like “what are their core pain points, desires, and objections?” unless the user is clearly a marketer or has already provided strategic context. Ask “who is this mainly for?” and then infer the rest. If the model is tempted to ask a strategic question, convert it into 2-6 multiple-choice options plus “不确定让我推荐”.
 
 Prefer this quick brief format when starting from little context:
 
@@ -58,7 +60,7 @@ After the user answers, output `AI-inferred assumptions` with pain points, desir
 
 Ask only for missing fields that materially change the output. Prefer 3-6 concise questions. Use Low-friction Brief Mode by default.
 
-Brief fields to resolve. Do not ask all of these directly; infer what the model can infer and ask only user-known facts:
+Internal brief fields to resolve. Do not show this list to the user. Infer what the model can infer and ask only user-known facts:
 
 1. Product/service: what is advertised, key features, price or offer if relevant.
 2. Audience: ask who should respond; infer pain point, desire, objections, and awareness level.
@@ -75,17 +77,16 @@ For visual/image-generation tasks, also ask:
 - Required aspect ratio/size and whether text must be rendered inside the image.
 - Available assets: product photos, logo, brand colors, fonts, screenshots, spokesperson/persona references.
 
-If the user only says “帮我做个广告” or equivalent, ask:
+If the user only says “帮我做个广告” or equivalent, ask the low-friction starter only:
 
 ```text
-为了按固定流程制作广告，我需要先确认这些信息：
-1. 广告卖的是什么？核心卖点、价格或优惠是什么？
-2. 目标用户是谁？他们最在意的痛点、欲望或顾虑是什么？
-3. 投放目标是什么：曝光、点击、留资、下单、下载，还是其他？
-4. 用在哪个渠道和格式：小红书、抖音、视频号、Meta、Google、海报、短视频等？尺寸或时长要求？
-5. 品牌语气是什么：专业、年轻、奢华、强促销、温暖、搞笑、克制等？
-6. 有哪些必须包含或不能出现的内容、素材、合规限制？
-7. 如果要生图，准备用哪个生图工具/模型：OpenAI GPT Image、Nano Banana/Gemini、豆包、Midjourney、Stable Diffusion，还是通用 prompt？
+我先问几个好回答的问题，其余营销判断我来推断：
+1. 你卖的是什么？一句话说产品/服务即可；有价格、优惠或核心卖点也可以补充。
+2. 主要想卖给谁？只说人群名称即可，比如宝妈、大学生、健身新手、企业老板。
+3. 准备用在哪个平台/形式？A 小红书封面  B 抖音/视频号短视频  C 朋友圈海报  D 电商主图  E 落地页头图  F 不确定让我推荐。
+4. 你更想要什么结果？A 曝光  B 点击  C 留资  D 下单  E 下载  F 不确定让我推荐。
+5. 如果要生图，准备用哪个工具？A 豆包  B OpenAI GPT Image  C Nano Banana/Gemini  D Midjourney  E Stable Diffusion  F 不确定。
+6. 有 logo、产品图、品牌色、禁用词或必须出现的信息吗？没有也可以说“没有”。
 ```
 
 Stop after asking if answers are required. Do not fill the rest of the turn with speculative ads unless the user asked for assumptions.
