@@ -1,0 +1,7 @@
+interface:
+  display_name: "广告制作协作"
+  short_description: "先澄清广告需求，再生成匹配渠道的广告方案与素材。"
+  default_prompt: "Use $ad-campaign-maker to clarify my advertising needs and create a complete ad deliverable."
+
+policy:
+  allow_implicit_invocation: true
