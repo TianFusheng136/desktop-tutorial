@@ -33,13 +33,36 @@ Read references as needed:
 
 ### 2. Gather the ad brief
 
-Ask only for missing fields that materially change the output. Prefer 5-8 concise questions.
 
-Required brief fields:
+#### Low-friction Brief Mode
+
+Default to low-friction brief collection. Ask only for user-known facts; do not make the user think like a marketing strategist. The model should infer pain points, desires, objections, awareness level, likely KPI, and message angles from the product, audience label, channel, and offer. Present these as editable assumptions instead of asking the user to invent them.
+
+Use multiple-choice options for unclear marketing fields. For example, if the goal is missing, ask the user to choose from: awareness / clicks / leads / purchases / app installs / event registration / retargeting / retention, and include one recommended option with a short reason. If the audience is vague, ask for a simple audience label only, then infer likely pain and decision concerns.
+
+Do not ask questions like “what are their core pain points, desires, and objections?” unless the user is clearly a marketer or has already provided strategic context. Ask “who is this mainly for?” and then infer the rest.
+
+Prefer this quick brief format when starting from little context:
+
+```text
+我先问几个好回答的问题，其余营销判断我来推断：
+1. 你卖的是什么？有没有价格、优惠或核心卖点？
+2. 主要想卖给谁？只说人群名称即可，比如宝妈、大学生、健身新手、SaaS 创业者。
+3. 准备用在哪个平台/形式？如果不确定，我可以给你选项：小红书封面、抖音信息流、朋友圈海报、电商主图、落地页头图。
+4. 你更想要什么结果？A 曝光  B 点击  C 留资  D 下单  E 下载  F 不确定让我推荐。
+5. 如果要生图，准备用哪个工具？A 豆包  B OpenAI GPT Image  C Nano Banana/Gemini  D Midjourney  E Stable Diffusion  F 不确定。
+6. 有 logo、产品图、品牌色、禁用词或必须出现的信息吗？
+```
+
+After the user answers, output `AI-inferred assumptions` with pain points, desires, objections, likely goal, and creative angle. Make the assumptions easy to correct.
+
+Ask only for missing fields that materially change the output. Prefer 3-6 concise questions. Use Low-friction Brief Mode by default.
+
+Brief fields to resolve. Do not ask all of these directly; infer what the model can infer and ask only user-known facts:
 
 1. Product/service: what is advertised, key features, price or offer if relevant.
-2. Audience: who should respond, pain point, desire, objections, awareness level.
-3. Goal: awareness, clicks, leads, purchases, app installs, event registration, retention, etc.
+2. Audience: ask who should respond; infer pain point, desire, objections, and awareness level.
+3. Goal: offer multiple-choice options such as awareness, clicks, leads, purchases, app installs, event registration, retargeting, or retention; recommend one if unclear.
 4. Channel and format: platform, placement, length/size/aspect ratio, paid/organic, video/static/audio/text.
 5. Message and offer: main promise, proof, promotion, CTA, landing destination.
 6. Brand voice: tone, language, style, examples to imitate or avoid.
