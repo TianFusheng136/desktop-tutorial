@@ -1,10 +1,10 @@
 # Image model adapters
 
-Use this when the user asks for image generation or names a target generator. The skill does not force a platform to use a model; it outputs the right prompt format for the tool the user will use.
+Use this when the user asks for image generation or names a target generator. The skill does not force a platform to use a model; it infers the likely tool from the current context and outputs the right prompt format for that tool.
 
 ## Selection rule
 
-Ask for Target generator if missing. If the user says “随便/通用”, provide a model-agnostic prompt plus one recommended adapter based on the platform they will use.
+Do not ask for Target generator by default. Infer it from context: if the user is inside or mentions 豆包/Doubao, use the Doubao adapter; if they mention ChatGPT/OpenAI, use OpenAI GPT Image; if they mention Gemini/Nano Banana, use Nano Banana / Gemini Image; if they mention Midjourney or Stable Diffusion, use that adapter. Ask only when the user explicitly wants prompts for another model, wants a cross-model prompt pack, or the inferred generator would materially change deliverables.
 
 ## OpenAI GPT Image adapter
 

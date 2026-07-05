@@ -1,6 +1,6 @@
 ---
 name: ad-campaign-maker
-description: "Use when creating, planning, rewriting, localizing, adapting, or evaluating ads, campaign concepts, promotional copy, visual ads, image prompts, social media ads, video scripts, ecommerce ads, landing pages, slogans, UGC scripts, A/B variants, or model-specific image prompts. Default to a low-friction brief: ask only user-known facts, infer marketing strategy, and offer choices for unclear goals or channels."
+description: "Use when creating, planning, rewriting, localizing, adapting, or evaluating ads, campaign concepts, promotional copy, visual ads, image prompts, social media ads, video scripts, ecommerce ads, landing pages, slogans, UGC scripts, A/B variants, or model-specific image prompts. Default to a low-friction brief: ask only user-known facts, infer marketing strategy, infer the target generator from context, and offer choices only for unclear goals or channels."
 ---
 
 # Ad Campaign Maker
@@ -9,7 +9,7 @@ description: "Use when creating, planning, rewriting, localizing, adapting, or e
 
 Clarify first, then create, but keep clarification easy. Do not produce final ads until the brief is clear enough. If the user explicitly says to proceed without answers, create with labeled assumptions.
 
-**Brief friction rule:** never dump a full marketing brief questionnaire. Ask only user-known facts. Never ask the user to supply pain points, desires, objections, awareness level, KPI, or creative angles unless they volunteer marketing strategy. 禁止让普通用户填写“痛点/需求欲望/决策顾虑”这类专家问题；由 AI 根据产品、人群、渠道和优惠推断，并作为可修改假设呈现。
+**Brief friction rule:** never dump a full marketing brief questionnaire. Ask only user-known facts. Never ask the user to supply pain points, desires, objections, awareness level, KPI, creative angles, or target generator unless they explicitly want cross-model prompt export. 禁止让普通用户填写“痛点/需求欲望/决策顾虑”这类专家问题；也不要默认询问生图工具。由 AI 根据产品、人群、渠道、优惠和当前使用环境推断，并作为可修改假设呈现。
 
 This skill creates advertising strategy, copy, visual direction, scripts, storyboards, and image-generation packs. A skill cannot force an external platform to use a specific image model; it must adapt the deliverable to the generator the user will actually use.
 
@@ -52,8 +52,8 @@ Prefer this quick brief format when starting from little context:
 2. 主要想卖给谁？只说人群名称即可，比如宝妈、大学生、健身新手、SaaS 创业者。
 3. 准备用在哪个平台/形式？如果不确定，我可以给你选项：小红书封面、抖音信息流、朋友圈海报、电商主图、落地页头图。
 4. 你更想要什么结果？A 曝光  B 点击  C 留资  D 下单  E 下载  F 不确定让我推荐。
-5. 如果要生图，准备用哪个工具？A 豆包  B OpenAI GPT Image  C Nano Banana/Gemini  D Midjourney  E Stable Diffusion  F 不确定。
-6. 有 logo、产品图、品牌色、禁用词或必须出现的信息吗？
+5. 有 logo、产品图、品牌色、禁用词或必须出现的信息吗？
+（生图工具我会根据你当前使用的平台自动适配；如果你明确要给其他模型用，再告诉我。）
 ```
 
 After the user answers, output `AI-inferred assumptions` with pain points, desires, objections, likely goal, and creative angle. Make the assumptions easy to correct.
@@ -73,9 +73,9 @@ Internal brief fields to resolve. Do not show this list to the user. Infer what 
 
 For visual/image-generation tasks, also ask:
 
-- Target generator: OpenAI GPT Image, Nano Banana/Gemini Image, Doubao/豆包, Midjourney, Stable Diffusion, or model-agnostic prompt.
 - Required aspect ratio/size and whether text must be rendered inside the image.
 - Available assets: product photos, logo, brand colors, fonts, screenshots, spokesperson/persona references.
+- Do not ask for target generator by default; infer it from context. If the user is using or mentions 豆包/Doubao, use the Doubao adapter. If the environment is unknown, use the model-agnostic fallback and state the assumed generator.
 
 If the user only says “帮我做个广告” or equivalent, ask the low-friction starter only:
 
@@ -85,8 +85,8 @@ If the user only says “帮我做个广告” or equivalent, ask the low-fricti
 2. 主要想卖给谁？只说人群名称即可，比如宝妈、大学生、健身新手、企业老板。
 3. 准备用在哪个平台/形式？A 小红书封面  B 抖音/视频号短视频  C 朋友圈海报  D 电商主图  E 落地页头图  F 不确定让我推荐。
 4. 你更想要什么结果？A 曝光  B 点击  C 留资  D 下单  E 下载  F 不确定让我推荐。
-5. 如果要生图，准备用哪个工具？A 豆包  B OpenAI GPT Image  C Nano Banana/Gemini  D Midjourney  E Stable Diffusion  F 不确定。
-6. 有 logo、产品图、品牌色、禁用词或必须出现的信息吗？没有也可以说“没有”。
+5. 有 logo、产品图、品牌色、禁用词或必须出现的信息吗？没有也可以说“没有”。
+（生图工具我会根据你当前使用的平台自动适配；如果你明确要给其他模型用，再告诉我。）
 ```
 
 Stop after asking if answers are required. Do not fill the rest of the turn with speculative ads unless the user asked for assumptions.
@@ -103,7 +103,7 @@ Use this workflow whenever the output includes a visual ad, static social image,
 2. Choose a composition template from `visual-ad-design-playbook.md`.
 3. Specify layout before prompt: focal point, product placement, text hierarchy, background, color palette, typography direction, CTA zone, safe margins.
 4. Decide whether text should be generated in-image or added later. If exact copy matters, recommend leaving clean text zones and adding typography in design software unless the selected model handles text reliably.
-5. Select Target generator and adapt the prompt using `image-model-adapters.md`.
+5. Resolve Target generator from context and adapt the prompt using `image-model-adapters.md`; do not ask which generator to use unless the user requests export for another model.
 6. Provide at least 2 visual variants with different angles or composition, not only different adjectives.
 7. Include post-generation edit notes: crop, retouch, text overlay, logo placement, product accuracy checks, and compliance checks.
 
@@ -136,5 +136,5 @@ Use this default structure unless a format is specified:
 - If the user provides a partial brief, ask only for missing fields that materially change output.
 - If the user says “你先假设，直接做”, proceed with assumptions and make a complete first draft.
 - If the user asks for multiple channels, create a master idea first, then adapt by channel.
-- If the user asks for image generation, do not only output a prompt; output visual strategy, layout spec, model-specific prompt, negative prompt/avoid list, and edit notes.
+- If the user asks for image generation, do not only output a prompt; infer the target generator from context, then output visual strategy, layout spec, model-specific prompt, negative prompt/avoid list, and edit notes.
 - If the user asks to revise, preserve confirmed fields and ask only about changed requirements.
