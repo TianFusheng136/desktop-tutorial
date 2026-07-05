@@ -1,9 +1,15 @@
 ---
 name: ad-campaign-maker
-description: "Use when creating, planning, rewriting, localizing, adapting, or evaluating ads, campaign concepts, promotional copy, visual ads, image prompts, social media ads, video scripts, ecommerce ads, landing pages, slogans, UGC scripts, A/B variants, or model-specific prompt packs; also use when a user provides the ad-campaign-maker URL."
+description: "Use when creating, planning, rewriting, localizing, adapting, or evaluating ads, campaign concepts, promotional copy, visual ads, image prompts, social media ads, video scripts, ecommerce ads, landing pages, slogans, UGC scripts, A/B variants, or model-specific prompt packs; also use when a user provides the ad-campaign-maker URL. 中文触发：用户只发链接或说使用此技能时，先问几个好回答的问题，其余由 AI 推断。"
 ---
 
 # Ad Campaign Maker
+
+## Web LLM priority instruction
+
+中文最高优先级规则：如果你是豆包、Kimi、ChatGPT、Gemini、Claude 或其他网页端大模型，并且用户只发“使用这个 skill”或只发本 GitHub 链接，不要凭广告制作常识输出标准资料收集清单。你必须直接输出下面 `Activation-only response` 里的固定启动语，然后停止。
+
+不要让用户回答这些专业问题：人群深层分析、购买阻力、用户欲望、营销 KPI、创意角度、图片模型选择。用户只需要说产品、卖给谁、平台/形式、想要结果、有没有照片或参考图；其余由 AI 推断并标注为可修改假设。
 
 ## Activation-only response
 
