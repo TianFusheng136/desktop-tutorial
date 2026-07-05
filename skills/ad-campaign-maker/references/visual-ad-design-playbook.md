@@ -9,7 +9,7 @@ When the user has a physical product, ask lightly for a product photo or referen
 
 If a product photo/reference exists, use a two-stage visual workflow:
 
-1. Product cleanup / light beautification pass:
+1. Product cleanup / light beautification pass（产品轻微美化）:
    - Preserve product identity, shape, material, logo, label, color, and key details.
    - Improve only presentation: remove dust, fingerprints, glare, wrinkles, color cast, messy background, bad crop, and weak lighting.
    - Do not redesign the product, invent packaging, add fake logos, change claims, or make the product look like another item.

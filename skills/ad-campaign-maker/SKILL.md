@@ -100,7 +100,7 @@ When proceeding with incomplete data, add an `Assumptions` section before the ou
 Use this workflow whenever the output includes a visual ad, static social image, poster, banner, product image, cover, thumbnail, or image-generation prompt.
 
 1. Define the visual job: stop-scroll, explain product, build trust, show lifestyle, create urgency, or retarget.
-2. If product/reference photos are available, run a product cleanup / light beautification pass before designing the ad: remove dust, glare, wrinkles, messy background, color cast, and crop issues while preserving product identity, shape, material, logo, and key details. For video poster work, create or describe a clean hero frame first, then use it in the poster/key visual.
+2. If product/reference photos are available, run a product cleanup / light beautification pass（产品轻微美化）before designing the ad: remove dust, glare, wrinkles, messy background, color cast, and crop issues while preserving product identity, shape, material, logo, and key details. For video poster work, create or describe a clean hero frame first, then use it in the poster/key visual.
 3. Choose a composition template from `visual-ad-design-playbook.md`.
 4. Specify layout before prompt: focal point, product placement, text hierarchy, background, color palette, typography direction, CTA zone, safe margins.
 5. Decide whether text should be generated in-image or added later. If exact copy matters, recommend leaving clean text zones and adding typography in design software unless the selected model handles text reliably.
