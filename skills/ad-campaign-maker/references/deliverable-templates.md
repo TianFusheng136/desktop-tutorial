@@ -38,6 +38,55 @@ Use these templates only when producing final ad outputs. Keep the user's reques
 - Fits channel constraints: yes/no
 ```
 
+## Visual ad / image generation pack
+
+```markdown
+## Brief recap
+- Product:
+- Audience:
+- Goal:
+- Channel/format:
+- Target generator/model:
+- CTA:
+
+## Visual strategy
+- Core visual idea:
+- Audience emotion:
+- Product role:
+- Design style:
+- Conversion focus:
+- Reason to believe / proof cue:
+
+## Layout spec
+- Canvas / aspect ratio:
+- Focal point:
+- Product placement:
+- Text hierarchy:
+- Text-safe area:
+- Background:
+- Color palette:
+- Typography direction:
+- CTA / logo placement:
+
+## Model-specific prompt
+- Generator:
+- Main prompt:
+- Negative prompt / avoid list:
+- Parameters if relevant:
+- Text overlay instruction:
+
+## Variants
+### Variant A — [composition/angle]
+### Variant B — [composition/angle]
+
+## Post-generation edit notes
+- What to fix if output is weak:
+- Cropping notes:
+- Retouching notes:
+- Text/logo overlay notes:
+- Compliance notes:
+```
+
 ## Short video ad / UGC script
 
 ```markdown
