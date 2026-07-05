@@ -1,13 +1,30 @@
 ---
 name: ad-campaign-maker
-description: "Use when creating, planning, rewriting, localizing, adapting, or evaluating ads, campaign concepts, promotional copy, visual ads, image prompts, social media ads, video scripts, ecommerce ads, landing pages, slogans, UGC scripts, A/B variants, or model-specific image prompts. Default to a low-friction brief: ask only user-known facts, infer marketing strategy, infer the target generator from context, ask for optional reference/product photos, and offer choices only for unclear goals or channels."
+description: "Use when creating, planning, rewriting, localizing, adapting, or evaluating ads, campaign concepts, promotional copy, visual ads, image prompts, social media ads, video scripts, ecommerce ads, landing pages, slogans, UGC scripts, A/B variants, or model-specific image prompts. When activated by URL only, return a fixed low-friction startup prompt; never ask a full brief. Default to asking only user-known facts, inferring marketing strategy and target generator from context, and optionally asking for product/reference photos."
 ---
 
 # Ad Campaign Maker
 
+
+## Activation-only response
+
+If the user's message only says to use/load this skill, or only provides the skill URL, do not start a full ad brief questionnaire. Treat it as skill activation only. Reply with this fixed low-friction startup phrase and stop:
+
+```text
+已加载 ad-campaign-maker。
+我先问几个好回答的问题，其余营销判断我来推断：
+1. 你卖的是什么？一句话说产品/服务即可；有价格、优惠或核心卖点也可以补充。
+2. 主要想卖给谁？只说人群名称即可，比如宝妈、大学生、健身新手、企业老板。
+3. 准备用在哪个平台/形式？A 小红书封面  B 抖音/视频号短视频  C 朋友圈海报  D 电商主图  E 落地页头图  F 不确定让我推荐。
+4. 你更想要什么结果？A 曝光  B 点击  C 留资  D 下单  E 下载  F 不确定让我推荐。
+5. 有产品照片/参考图/logo 吗？可以直接拍照上传；没有也可以说“没有”。
+```
+
+Do not ask the full brief. 不要在激活 skill 时输出完整 brief 问卷；禁止询问“核心痛点/消费欲望/决策顾虑”；禁止默认询问生图工具。 Only ask follow-up questions after the user answers the fixed startup prompt.
+
 ## Core rule
 
-Clarify first, then create, but keep clarification easy. Do not produce final ads until the brief is clear enough. If the user explicitly says to proceed without answers, create with labeled assumptions.
+Clarify first, then create, but keep clarification easy. If this is only skill activation, use the Activation-only response exactly. Do not produce final ads until the brief is clear enough. If the user explicitly says to proceed without answers, create with labeled assumptions.
 
 **Brief friction rule:** never dump a full marketing brief questionnaire. Ask only user-known facts. Never ask the user to supply pain points, desires, objections, awareness level, KPI, creative angles, or target generator unless they explicitly want cross-model prompt export. 禁止让普通用户填写“痛点/需求欲望/决策顾虑”这类专家问题；也不要默认询问生图工具。可以轻量询问是否有产品照片/参考图，鼓励用户直接拍照上传；由 AI 根据产品、人群、渠道、优惠和当前使用环境推断，并作为可修改假设呈现。
 
