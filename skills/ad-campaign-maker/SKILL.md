@@ -1,14 +1,13 @@
 ---
 name: ad-campaign-maker
-description: "Use when creating, planning, rewriting, localizing, adapting, or evaluating ads, campaign concepts, promotional copy, visual ads, image prompts, social media ads, video scripts, ecommerce ads, landing pages, slogans, UGC scripts, A/B variants, or model-specific image prompts. When activated by URL only, return a fixed low-friction startup prompt; never ask a full brief. Default to asking only user-known facts, inferring marketing strategy and target generator from context, and optionally asking for product/reference photos."
+description: "Use when creating, planning, rewriting, localizing, adapting, or evaluating ads, campaign concepts, promotional copy, visual ads, image prompts, social media ads, video scripts, ecommerce ads, landing pages, slogans, UGC scripts, A/B variants, or model-specific prompt packs; also use when a user provides the ad-campaign-maker URL."
 ---
 
 # Ad Campaign Maker
 
-
 ## Activation-only response
 
-If the user's message only says to use/load this skill, or only provides the skill URL, do not start a full ad brief questionnaire. Treat it as skill activation only. Reply with this fixed low-friction startup phrase and stop:
+If the user only says to use/load this skill, or only provides the skill URL, output exactly the following startup prompt and stop. Do not introduce the skill, summarize the workflow, or ask a 7-item standard intake list.
 
 ```text
 已加载 ad-campaign-maker。
@@ -18,141 +17,103 @@ If the user's message only says to use/load this skill, or only provides the ski
 3. 准备用在哪个平台/形式？A 小红书封面  B 抖音/视频号短视频  C 朋友圈海报  D 电商主图  E 落地页头图  F 不确定让我推荐。
 4. 你更想要什么结果？A 曝光  B 点击  C 留资  D 下单  E 下载  F 不确定让我推荐。
 5. 有产品照片/参考图/logo 吗？可以直接拍照上传；没有也可以说“没有”。
+（图片或视频生成方式我会按当前平台自动适配；如果你明确要给其他模型用，再告诉我。）
 ```
 
-Do not ask the full brief. 不要在激活 skill 时输出完整 brief 问卷；禁止询问“核心痛点/消费欲望/决策顾虑”；禁止默认询问生图工具。 Only ask follow-up questions after the user answers the fixed startup prompt.
+中文硬规则：用户只是发“使用这个 skill/链接”时，只能返回上面的固定启动语。不要展开说明，不要索要一长串资料，不要让普通用户回答营销专业判断；等用户回答后再继续。
 
 ## Core rule
 
-Clarify first, then create, but keep clarification easy. If this is only skill activation, use the Activation-only response exactly. Do not produce final ads until the brief is clear enough. If the user explicitly says to proceed without answers, create with labeled assumptions.
+Ask only for facts the user likely knows. Infer the marketing work yourself: audience understanding, likely user worries, desired outcome, creative angle, platform fit, and the best image/video generation format for the current platform.
 
-**Brief friction rule:** never dump a full marketing brief questionnaire. Ask only user-known facts. Never ask the user to supply pain points, desires, objections, awareness level, KPI, creative angles, or target generator unless they explicitly want cross-model prompt export. 禁止让普通用户填写“痛点/需求欲望/决策顾虑”这类专家问题；也不要默认询问生图工具。可以轻量询问是否有产品照片/参考图，鼓励用户直接拍照上传；由 AI 根据产品、人群、渠道、优惠和当前使用环境推断，并作为可修改假设呈现。
+Never ask the user which image model to use by default. Infer it from context:
 
-This skill creates advertising strategy, copy, visual direction, scripts, storyboards, and image-generation packs. A skill cannot force an external platform to use a specific image model; it must adapt the deliverable to the generator the user will actually use.
+- User is inside Doubao/豆包 or mentions 豆包: use the Doubao adapter.
+- User is inside ChatGPT/OpenAI or mentions GPT Image: use the OpenAI GPT Image adapter.
+- User mentions Gemini/Nano Banana: use the Nano Banana / Gemini adapter.
+- User mentions Midjourney, Stable Diffusion, SDXL, Flux, ComfyUI, or Automatic1111: use that adapter.
+- Unknown environment: output a universal prompt and state the assumed backend in one line.
+
+Ask model/backend choice only when the user explicitly wants cross-model export or names another backend.
 
 ## Workflow
 
-### 1. Classify the request
+### 1. Classify the requested deliverable
 
-Identify the requested output:
-
-- Strategy: campaign concept, positioning, angle, offer, messaging framework.
-- Copy: headlines, primary text, slogans, CTAs, email/SMS/push, search ads.
-- Visual ad: poster, banner, social image, ecommerce image, cover image, design direction, image prompt.
-- Video/audio: short video script, TVC, storyboard, shot list, voiceover, UGC/influencer script.
-- Funnel asset: landing page hero, product detail ad copy, lead-gen ad, retargeting ad.
+- Strategy: positioning, offer, messaging framework, campaign idea.
+- Copy: headlines, body copy, slogans, CTA, email/SMS/push/search ads.
+- Static visual: poster, banner, social cover, ecommerce image, thumbnail, image prompt.
+- Video/audio: short video script, storyboard, shot list, voiceover, UGC script.
+- Funnel asset: landing page section, product detail copy, lead-gen ad, retargeting ad.
 - Optimization: critique, rewrite, localization, A/B variants, platform adaptation.
 
-Read references as needed:
+Read references only when needed:
 
-- `references/deliverable-templates.md` for final output formats.
-- `references/channel-playbooks.md` for platform/channel constraints.
-- `references/visual-ad-design-playbook.md` for visual ads, posters, banners, covers, product images, and image-generation planning.
-- `references/image-model-adapters.md` when the user wants image generation or names a target generator/model.
+- `references/deliverable-templates.md` for final output structures.
+- `references/channel-playbooks.md` for platform adaptation.
+- `references/visual-ad-design-playbook.md` for static visuals, posters, covers, product images, and visual layout planning.
+- `references/image-model-adapters.md` for model-specific image prompts.
 
-### 2. Gather the ad brief
+### 2. Intake with minimal effort
 
+Default intake is the fixed startup prompt above. If the user already gave some information, ask only missing facts that materially change the output.
 
-#### Low-friction Brief Mode
-
-Default to low-friction brief collection. Ask only for user-known facts; do not make the user think like a marketing strategist. Never ask the user to supply pain points; infer pain points and decision concerns from the simple audience label. The model should infer pain points, desires, objections, awareness level, likely KPI, and message angles from the product, audience label, channel, and offer. Present these as editable assumptions instead of asking the user to invent them.
-
-Use multiple-choice options for unclear marketing fields. For example, if the goal is missing, ask the user to choose from: awareness / clicks / leads / purchases / app installs / event registration / retargeting / retention, and include one recommended option with a short reason. If the audience is vague, ask for a simple audience label only, then infer likely pain and decision concerns.
-
-Do not ask questions like “what are their core pain points, desires, and objections?” unless the user is clearly a marketer or has already provided strategic context. Ask “who is this mainly for?” and then infer the rest. If the model is tempted to ask a strategic question, convert it into 2-6 multiple-choice options plus “不确定让我推荐”.
-
-Prefer this quick brief format when starting from little context:
+Good follow-up pattern:
 
 ```text
-我先问几个好回答的问题，其余营销判断我来推断：
-1. 你卖的是什么？有没有价格、优惠或核心卖点？
-2. 主要想卖给谁？只说人群名称即可，比如宝妈、大学生、健身新手、SaaS 创业者。
-3. 准备用在哪个平台/形式？如果不确定，我可以给你选项：小红书封面、抖音信息流、朋友圈海报、电商主图、落地页头图。
-4. 你更想要什么结果？A 曝光  B 点击  C 留资  D 下单  E 下载  F 不确定让我推荐。
-5. 有产品照片/参考图/logo 吗？可以直接拍照上传；没有也可以继续。
-（生图工具我会根据你当前使用的平台自动适配；如果你明确要给其他模型用，再告诉我。）
+我还需要 1-3 个好回答的信息，其余我来判断：
+1. [fact question]
+2. [fact question]
+3. 有产品照片/参考图/logo 吗？可以直接拍照上传；没有也可以继续。
 ```
 
-After the user answers, output `AI-inferred assumptions` with pain points, desires, objections, likely goal, and creative angle. Make the assumptions easy to correct.
+After the user answers, include an `AI 推断` section before creating the ad:
 
-Ask only for missing fields that materially change the output. Prefer 3-6 concise questions. Use Low-friction Brief Mode by default.
+- 人群理解：基于用户给的人群名称推断。
+- 用户主要在意点：用通俗语言写，不让用户自己想。
+- 行动阻力：价格、信任、效果、便利性等，由模型推断。
+- 推荐目标：如果用户不懂，给出推荐和理由。
+- 推荐创意角度：2-4 个方向，方便用户改。
 
-Internal brief fields to resolve. Do not show this list to the user. Infer what the model can infer and ask only user-known facts:
+If a marketing field is unclear, use choices and mark a recommendation. Example: `结果目标：A 曝光（推荐，适合新品/低信息产品） B 点击 C 留资 D 下单 E 下载 F 让我推荐`.
 
-1. Product/service: what is advertised, key features, price or offer if relevant.
-2. Audience: ask who should respond; infer pain point, desire, objections, and awareness level.
-3. Goal: offer multiple-choice options such as awareness, clicks, leads, purchases, app installs, event registration, retargeting, or retention; recommend one if unclear.
-4. Channel and format: platform, placement, length/size/aspect ratio, paid/organic, video/static/audio/text.
-5. Message and offer: main promise, proof, promotion, CTA, landing destination.
-6. Brand voice: tone, language, style, examples to imitate or avoid.
-7. Constraints: legal/compliance limits, claims that must/must not appear, required words, assets, deadline.
-8. Success metric: KPI and testing requirements.
+### 3. Photo/reference option
 
-For visual/image-generation tasks, also ask:
+For visual ads, gently ask whether the user has product photos, reference images, logo, brand color, or screenshots. This is optional and must not block progress.
 
-- Required aspect ratio/size and whether text must be rendered inside the image.
-- Available assets: product photos, quick phone shots, reference images, logo, brand colors, fonts, screenshots, spokesperson/persona references. Ask lightly: “有产品照片/参考图吗？可以直接拍照上传；没有也可以继续。”
-- Do not ask for target generator by default; infer it from context. If the user is using or mentions 豆包/Doubao, use the Doubao adapter. If the environment is unknown, use the model-agnostic fallback and state the assumed generator.
+If product photos or reference images exist:
 
-If the user only says “帮我做个广告” or equivalent, ask the low-friction starter only:
+1. First prepare a product cleanup / 产品轻微美化 pass: remove dust, fingerprints, glare, messy background, color cast, wrinkles, and crop issues.
+2. Preserve product identity, shape, material, label, logo, color, and key details.
+3. Then design the final ad, poster, cover, or video key frame using the cleaned product.
 
-```text
-我先问几个好回答的问题，其余营销判断我来推断：
-1. 你卖的是什么？一句话说产品/服务即可；有价格、优惠或核心卖点也可以补充。
-2. 主要想卖给谁？只说人群名称即可，比如宝妈、大学生、健身新手、企业老板。
-3. 准备用在哪个平台/形式？A 小红书封面  B 抖音/视频号短视频  C 朋友圈海报  D 电商主图  E 落地页头图  F 不确定让我推荐。
-4. 你更想要什么结果？A 曝光  B 点击  C 留资  D 下单  E 下载  F 不确定让我推荐。
-5. 有产品照片/参考图/logo 吗？可以直接拍照上传；没有也可以说“没有”。
-（生图工具我会根据你当前使用的平台自动适配；如果你明确要给其他模型用，再告诉我。）
-```
+### 4. Create the ad
 
-Stop after asking if answers are required. Do not fill the rest of the turn with speculative ads unless the user asked for assumptions.
+Use this default structure unless the user requested another format:
 
-### 3. Confirm assumptions
-
-When proceeding with incomplete data, add an `Assumptions` section before the output. Keep assumptions practical and easy to correct.
-
-### 4. Visual Ad Design Workflow
-
-Use this workflow whenever the output includes a visual ad, static social image, poster, banner, product image, cover, thumbnail, or image-generation prompt.
-
-1. Define the visual job: stop-scroll, explain product, build trust, show lifestyle, create urgency, or retarget.
-2. If product/reference photos are available, run a product cleanup / light beautification pass（产品轻微美化）before designing the ad: remove dust, glare, wrinkles, messy background, color cast, and crop issues while preserving product identity, shape, material, logo, and key details. For video poster work, create or describe a clean hero frame first, then use it in the poster/key visual.
-3. Choose a composition template from `visual-ad-design-playbook.md`.
-4. Specify layout before prompt: focal point, product placement, text hierarchy, background, color palette, typography direction, CTA zone, safe margins.
-5. Decide whether text should be generated in-image or added later. If exact copy matters, recommend leaving clean text zones and adding typography in design software unless the selected model handles text reliably.
-6. Resolve Target generator from context and adapt the prompt using `image-model-adapters.md`; do not ask which generator to use unless the user requests export for another model.
-7. Provide at least 2 visual variants with different angles or composition, not only different adjectives.
-8. Include post-generation edit notes: crop, retouch, text overlay, logo placement, product accuracy checks, and compliance checks.
-
-### 5. Create the advertisement
-
-Use this default structure unless a format is specified:
-
-1. `Brief recap`: product, audience, goal, channel, tone, CTA, target generator if visual.
-2. `Creative strategy`: core insight, value proposition, hook, proof, objection handling.
-3. `Ad deliverables`: copy/script/layout/storyboard/image-generation pack.
-4. `A/B variants`: 2-5 variations with different hooks, audience angles, or visual concepts.
-5. `Production notes`: assets, visual direction, pacing, localization, compliance.
-6. `Quality checklist`: audience, single promise, CTA, proof, channel fit, visual hierarchy, model fit.
+1. `输入摘要`: product, audience, goal, channel, tone, CTA, inferred backend if visual.
+2. `AI 推断`: user understanding, action barriers, recommended angle.
+3. `创意策略`: hook, main promise, proof placeholder if proof is missing, CTA logic.
+4. `交付内容`: copy/script/layout/storyboard/model-specific prompt.
+5. `A/B 变体`: 2-5 variations with different hooks or compositions.
+6. `制作备注`: assets, photo cleanup, text overlay, crop, platform fit, compliance check.
 
 ## Creation standards
 
 - Lead with a concrete user benefit, not generic adjectives.
-- Use one main promise per ad unless the format allows multiple sections.
-- Make the CTA specific and aligned to funnel stage.
-- Prefer specific proof: numbers, demo, testimonial, mechanism, guarantee, before/after context. Do not invent proof; ask for it or label as placeholder.
-- Write in the user's language by default. If the target market differs from the conversation language, ask or provide localized variants.
-- Avoid unverifiable superlatives like “best”, “guaranteed”, “No.1”, medical/financial promises, or competitor claims unless the user provides proof and asks to include them.
-- For regulated topics, request compliance requirements before finalizing.
-- For visual/image prompts, specify subject, product treatment, reference/product photo handling, light beautification pass, scene, composition, lighting, camera, brand palette, text area, aspect ratio, negative constraints, and post-edit steps.
-- For short-form video, include a 1-3 second hook, scene-by-scene script, on-screen text, VO, visuals, CTA, and duration.
+- Use one main promise per ad unless the format requires multiple sections.
+- Make the CTA specific and aligned to the funnel stage.
+- Do not invent proof. Ask for proof or mark it as placeholder.
+- Write in the user's language by default.
+- Avoid unverifiable superlatives, medical/financial promises, and competitor claims unless the user provides proof.
+- For visual/image prompts, specify subject, photo handling, 产品轻微美化 step, scene, layout, lighting, palette, text-safe area, ratio, avoid list, and post-edit steps.
+- For short video, include a 1-3 second hook, scene-by-scene script, on-screen text, VO, visuals, CTA, and duration.
 
 ## Response behavior
 
-- If the user only says “帮我做个广告” or equivalent, ask the ad brief questions first.
-- If the user provides a partial brief, ask only for missing fields that materially change output.
-- If the user says “你先假设，直接做”, proceed with assumptions and make a complete first draft.
-- If the user asks for multiple channels, create a master idea first, then adapt by channel.
-- If the user asks for image generation, do not only output a prompt; infer the target generator from context, then output visual strategy, layout spec, model-specific prompt, negative prompt/avoid list, and edit notes.
-- If the user asks to revise, preserve confirmed fields and ask only about changed requirements.
+- Activation-only: return the fixed startup prompt and stop.
+- Partial information: ask only 1-3 missing user-known facts.
+- User says to assume and proceed: create a first draft with clearly labeled assumptions.
+- Multiple channels: create one master idea, then adapt it by channel.
+- Image generation: output visual strategy, layout spec, inferred backend prompt, avoid list, and edit notes; do not ask the backend question unless needed for cross-model export.
+- Revision: preserve confirmed fields and ask only about changed requirements.

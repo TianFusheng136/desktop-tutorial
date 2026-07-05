@@ -1,27 +1,33 @@
 # Image model adapters
 
-Use this when the user asks for image generation or names a target generator. The skill does not force a platform to use a model; it infers the likely tool from the current context and outputs the right prompt format for that tool. When a reference image or product photo exists, preserve the product and use an edit/beautification step before generating the final ad.
+Use this when the user asks for image generation, poster generation, cover generation, or model-specific prompt output. The skill adapts to the backend implied by the current platform instead of asking the user to choose.
 
 ## Selection rule
 
-Do not ask for Target generator by default. Infer it from context: if the user is inside or mentions 豆包/Doubao, use the Doubao adapter; if they mention ChatGPT/OpenAI, use OpenAI GPT Image; if they mention Gemini/Nano Banana, use Nano Banana / Gemini Image; if they mention Midjourney or Stable Diffusion, use that adapter. Ask only when the user explicitly wants prompts for another model, wants a cross-model prompt pack, or the inferred generator would materially change deliverables.
+Infer the image backend from context:
+
+- Doubao / 豆包: use the Doubao adapter.
+- ChatGPT / OpenAI / GPT Image: use the OpenAI GPT Image adapter.
+- Gemini / Nano Banana: use the Nano Banana / Gemini adapter.
+- Midjourney: use the Midjourney adapter.
+- Stable Diffusion / SDXL / Flux / ComfyUI / Automatic1111: use the Stable Diffusion adapter.
+- Unknown: output a universal prompt and state the assumed backend.
+
+Ask for backend choice only when the user requests prompt export for another model or a cross-model prompt pack.
 
 ## OpenAI GPT Image adapter
 
-Use for OpenAI GPT Image models such as `gpt-image-2` or compatible ChatGPT image generation.
-
-Best for: instruction-following, ad layouts with natural-language constraints, iterative editing, product/lifestyle scenes, and conversational refinements.
-
-Output format:
+Best for instruction-following, iterative editing, product/lifestyle scenes, and conversational refinements.
 
 ```markdown
 ### OpenAI GPT Image prompt
 Create a [format/aspect ratio] advertising image for [product].
-Goal: [conversion/awareness/etc.]
+Goal: [awareness/clicks/leads/purchases/etc.]
 Audience: [target audience].
 Scene: [specific scene].
 Composition: [layout, focal point, text-safe area].
 Product treatment: [accuracy, size, angle, packaging details].
+If reference photo exists: lightly clean the product presentation first while keeping identity unchanged.
 Style: [commercial/lifestyle/editorial/etc.].
 Lighting/camera: [lighting, lens, perspective].
 Brand direction: [colors, mood, typography area].
@@ -30,21 +36,15 @@ Avoid: [distortions, extra logos, unsupported claims, clutter, misspelled text].
 ```
 
 Notes:
-- If a product/reference photo is provided, first ask the image model to lightly clean up the product photo while keeping the product unchanged; then generate or edit into the final ad layout.
 - Prefer plain natural language over parameter-heavy syntax.
 - For exact typography, request clean space and add text later unless the user explicitly wants rendered text.
-- For edits, describe what must remain unchanged and what should change.
 
-## Nano Banana / Gemini Image adapter
+## Nano Banana / Gemini adapter
 
-Use for Nano Banana, Gemini Image, Gemini Flash Image, or Google AI Studio image workflows.
-
-Best for: conversational image editing, subject consistency, combining reference images, lifestyle scenes, and fast visual iteration.
-
-Output format:
+Best for conversational image editing, subject consistency, combining reference images, lifestyle scenes, and fast iteration.
 
 ```markdown
-### Nano Banana / Gemini Image prompt
+### Nano Banana / Gemini prompt
 Task: Generate/Edit an ad image.
 Keep consistent: [product/person/logo/reference elements].
 Change/create: [scene, action, background, mood].
@@ -57,20 +57,15 @@ Avoid: [fake UI, warped hands, wrong labels, clutter, unreadable text].
 ```
 
 Notes:
-- Emphasize what to keep unchanged when editing references. Use a first pass for 产品轻微美化 / cleanup, then a second pass for poster or video cover composition.
-- Use iterative follow-up prompts: first composition, then lighting, then cleanup.
-- For brand/product accuracy, provide reference images when possible.
+- When editing references, emphasize what stays unchanged.
+- Use a first pass for 产品轻微美化 / cleanup, then a second pass for poster or video cover composition.
 
 ## Doubao / 豆包 adapter
 
-Use when the user will paste the prompt into 豆包网页端 or Doubao image tools.
-
-Best for: Chinese-language workflows, social media posters, ecommerce images, lifestyle ads, fast native Chinese prompt iteration.
-
-Output format:
+Best for Chinese-language workflows, social media posters, ecommerce images, lifestyle ads, and fast native Chinese iteration.
 
 ```markdown
-### 豆包生图提示词
+### 豆包图片提示词
 画面类型：[海报/小红书封面/电商主图/信息流广告/短视频封面]
 广告目标：[曝光/点击/下单/留资]
 主体：[产品/人物/场景，必须准确]
@@ -83,18 +78,20 @@ Output format:
 不要出现：[错字、乱码、多余logo、畸形手、产品变形、虚假夸张效果]
 ```
 
+Reference-photo edit wording:
+
+```text
+保持产品主体、形状、材质、颜色、logo/标签不变，只清理灰尘、反光、杂乱背景和偏色，提升光线质感；再基于清理后的产品做广告海报/短视频封面构图。
+```
+
 Notes:
-- Use Chinese prompts by default. If the user uploads a product photo, write an edit prompt that says: 保持产品主体、形状、材质和颜色不变，只清理灰尘、反光、杂乱背景并提升光线质感；再基于清理后的产品做广告海报/视频封面。
+- Use Chinese prompts by default.
 - Keep overlay text short. If exact text matters, ask for blank space and add text later.
 - Add “商业广告质感、主体清晰、背景干净、适合投放” when the user wants polished output.
 
 ## Midjourney adapter
 
-Use when the target is Midjourney.
-
-Best for: high-style campaign key visuals, mood boards, premium art direction, cinematic or editorial concepts.
-
-Output format:
+Best for high-style campaign key visuals, mood boards, premium art direction, cinematic or editorial concepts.
 
 ```markdown
 ### Midjourney prompt
@@ -103,16 +100,11 @@ Output format:
 
 Notes:
 - Do not rely on Midjourney for exact text. Recommend adding typography later.
-- Use `--ar` for ratio. Keep parameter suggestions separate from the descriptive prompt.
-- For product accuracy, use image references if available.
+- Use `--ar` for ratio.
 
 ## Stable Diffusion adapter
 
-Use for SDXL, Flux-style SD workflows, ComfyUI, Automatic1111, or other local pipelines.
-
-Best for: controllable pipelines, negative prompts, LoRA/control images, batch variations, inpainting.
-
-Output format:
+Best for controllable pipelines, negative prompts, LoRA/control images, batch variations, and inpainting.
 
 ```markdown
 ### Stable Diffusion positive prompt
@@ -124,22 +116,17 @@ low quality, blurry, distorted product, wrong logo, extra text, misspelled text,
 ### Suggested controls
 - Aspect ratio / size:
 - Seed strategy:
-- ControlNet / reference use:
+- Reference/control image use:
 - Inpainting plan:
 - Post-edit typography:
 ```
 
-Notes:
-- Separate positive and negative prompts.
-- Recommend inpainting for product/logo correction.
-- Use references/control images for layout or product fidelity.
+## Universal fallback
 
-## Model-agnostic fallback
-
-When the generator is unknown, output:
+When the image backend is unknown, output:
 
 1. Visual strategy.
 2. Layout spec.
 3. Universal prompt.
-4. Generator-specific adapter choices the user can copy from.
+4. Optional backend-specific adaptations.
 5. Post-generation edit checklist.
