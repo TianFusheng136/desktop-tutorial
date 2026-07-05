@@ -1,6 +1,6 @@
 # Image model adapters
 
-Use this when the user asks for image generation or names a target generator. The skill does not force a platform to use a model; it infers the likely tool from the current context and outputs the right prompt format for that tool.
+Use this when the user asks for image generation or names a target generator. The skill does not force a platform to use a model; it infers the likely tool from the current context and outputs the right prompt format for that tool. When a reference image or product photo exists, preserve the product and use an edit/beautification step before generating the final ad.
 
 ## Selection rule
 
@@ -30,6 +30,7 @@ Avoid: [distortions, extra logos, unsupported claims, clutter, misspelled text].
 ```
 
 Notes:
+- If a product/reference photo is provided, first ask the image model to lightly clean up the product photo while keeping the product unchanged; then generate or edit into the final ad layout.
 - Prefer plain natural language over parameter-heavy syntax.
 - For exact typography, request clean space and add text later unless the user explicitly wants rendered text.
 - For edits, describe what must remain unchanged and what should change.
@@ -56,7 +57,7 @@ Avoid: [fake UI, warped hands, wrong labels, clutter, unreadable text].
 ```
 
 Notes:
-- Emphasize what to keep unchanged when editing references.
+- Emphasize what to keep unchanged when editing references. Use a first pass for 产品轻微美化 / cleanup, then a second pass for poster or video cover composition.
 - Use iterative follow-up prompts: first composition, then lighting, then cleanup.
 - For brand/product accuracy, provide reference images when possible.
 
@@ -83,7 +84,7 @@ Output format:
 ```
 
 Notes:
-- Use Chinese prompts by default.
+- Use Chinese prompts by default. If the user uploads a product photo, write an edit prompt that says: 保持产品主体、形状、材质和颜色不变，只清理灰尘、反光、杂乱背景并提升光线质感；再基于清理后的产品做广告海报/视频封面。
 - Keep overlay text short. If exact text matters, ask for blank space and add text later.
 - Add “商业广告质感、主体清晰、背景干净、适合投放” when the user wants polished output.
 

@@ -2,6 +2,32 @@
 
 Use this when the user asks for posters, banners, product ads, social covers, thumbnails, ecommerce images, or image-generation prompts.
 
+
+## Product photo intake and light beautification
+
+When the user has a physical product, ask lightly for a product photo or reference image: “有产品照片/参考图吗？可以直接拍照上传；没有也可以继续。” This is a low-friction optional ask, not a blocker.
+
+If a product photo/reference exists, use a two-stage visual workflow:
+
+1. Product cleanup / light beautification pass:
+   - Preserve product identity, shape, material, logo, label, color, and key details.
+   - Improve only presentation: remove dust, fingerprints, glare, wrinkles, color cast, messy background, bad crop, and weak lighting.
+   - Do not redesign the product, invent packaging, add fake logos, change claims, or make the product look like another item.
+   - For fabric, paper, food, cosmetics, electronics, and accessories, keep realistic texture and scale.
+2. Advertising key visual pass:
+   - Place the cleaned product into the chosen composition template.
+   - Add scene, background, brand color, text-safe area, CTA zone, and platform ratio.
+   - For video poster / short-video cover, create a clean hero frame first, then design the poster around that frame.
+
+Suggested wording for output:
+
+```markdown
+## Product image prep
+- Reference/photo needed: optional; user can upload a quick phone shot.
+- Cleanup pass: remove dust/glare/background clutter; preserve product identity.
+- Ad pass: use cleaned product as hero object in [composition].
+```
+
 ## Visual brief checklist
 
 - Visual job: stop-scroll, explain, trust-build, lifestyle desire, price urgency, retarget, or launch announcement.
